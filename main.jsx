@@ -1,0 +1,40 @@
+import React, {useEffect, useRef, useState} from 'react'
+import {createRoot} from 'react-dom/client'
+import {AnimatePresence, motion, useReducedMotion} from 'framer-motion'
+import {BookOpen, Sparkles, GraduationCap, Presentation, Pencil, ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play, Menu, X, NotebookPen, Lightbulb, UsersRound, MessagesSquare, Atom, Triangle, Plus} from 'lucide-react'
+import Enquiry from './Enquiry'
+import WhatsAppContact from './WhatsAppContact'
+import './style.css'
+
+const SLIDE_DURATION_MS = 5000
+const slides = [
+  {first:'Find a tutor.',second:'Become a tutor.',copy:'Looking for tuition classes? Tell us your class and subjects. Want to work as a tutor? Tell us what you teach.',caption:'Learning is better together',alt:'Students studying together on a campus lawn'},
+  {first:'Stay curious.',second:'Ask freely.',copy:'Bring your questions and explore the subjects you want to understand, one conversation at a time.',caption:'Room for every question',alt:'Students listening during a classroom lesson'},
+  {first:'Share knowledge.',second:'Shape futures.',copy:'Connect with learners who need your subject expertise and a little guidance along the way.',caption:'A community of curious minds',alt:'College students working together outdoors'},
+]
+function Brand(){return <a className="brand" href="#home" aria-label="Studyfolk home"><span className="brandicon"><BookOpen size={25} strokeWidth={2.3}/></span><span>Studyfolk<span className="branddot">.</span></span></a>}
+function RoleArt({teacher}){return <div className={'role-art '+(teacher?'teacher-art':'student-art')} aria-hidden="true">{teacher?<><div className="chalkboard"><span>a² + b²</span><div className="chalkline"/><Triangle size={23}/></div><div className="legs"/></>:<><div className="notebook"><div className="binding"/><div className="note-lines"/><Atom size={32}/></div><Pencil className="art-pencil" size={54}/></>}<Plus className="art-plus" size={15}/></div>}
+function App(){
+ const [slide,setSlide]=useState(0),[paused,setPaused]=useState(false),[menu,setMenu]=useState(false),[path,setPath]=useState(null)
+ const [role,setRole]=useState(()=>{try{return sessionStorage.getItem('studyfolk-role')==='teacher'?'teacher':'student'}catch{return 'student'}})
+ const reduced=useReducedMotion(),dialog=useRef(null)
+ useEffect(()=>{try{sessionStorage.setItem('studyfolk-role',role)}catch{}},[role])
+ useEffect(() => {
+   if (paused || reduced || path) return
+   const timer = window.setTimeout(() => {
+     setSlide(currentSlide => (currentSlide + 1) % slides.length)
+   }, SLIDE_DURATION_MS)
+   return () => window.clearTimeout(timer)
+ }, [slide, paused, reduced, path])
+ useEffect(()=>{if(path)dialog.current?.showModal();else dialog.current?.close()},[path])
+ const openPath=r=>{setRole(r);setPath(r)}
+ const current=slides[slide]
+ return <div id="home"><header><div className="shell header-inner"><Brand/><nav aria-label="Main navigation" className={menu?'open':''}>{[['Home','home'],['Our pathways','pathways'],['About us','about'],['Enquiry','enquiry']].map(([label,id])=><a onClick={()=>setMenu(false)} key={id} href={'#'+id}>{label}</a>)}</nav><a href="#enquiry" className="btn navcta">Get in touch <MessagesSquare size={16}/></a><button className="menu" aria-label="Toggle navigation" aria-expanded={menu} onClick={()=>setMenu(v=>!v)}>{menu?<X/>:<Menu/>}</button></div></header>
+ <main><section className="hero shell" aria-roledescription="carousel" aria-label="Studyfolk highlights"><div className="hero-content"><div className="eyebrow hero-tag"><span/> TUITION CLASSES IN INDIA</div><AnimatePresence mode="wait" initial={false}><motion.div key={slide} initial={{opacity:0,x:reduced?0:-16}} animate={{opacity:1,x:0}} exit={{opacity:0,x:reduced?0:16}} transition={{duration:reduced?0:.23}}><h1>{current.first}<br/><em>{current.second}</em></h1><p>{current.copy}</p></motion.div></AnimatePresence><div className="actions"><a className="btn orange" href="#enquiry" onClick={()=>setRole('student')}><GraduationCap size={18}/> Find tuition</a><a className="btn ghost" href="#enquiry" onClick={()=>setRole('teacher')}><Presentation size={18}/> Apply to tutor</a></div><div className="slide-control"><span>0{slide+1}<small> / 03</small></span><div className="slide-dots">{slides.map((s,i)=><button key={s.first} className={slide===i?'active':''} aria-label={'Show slide '+(i+1)} aria-pressed={i===slide} onClick={()=>setSlide(i)}/>)}</div></div></div>
+ <div className="hero-visual"><div className="photo"><div className="tape"/><div className="photo-image"><AnimatePresence initial={false}><motion.img key={slide} src={'/images/hero-'+(slide+1)+'.jpg'} alt={current.alt} initial={{x:reduced?0:'-100%'}} animate={{x:0}} exit={{x:reduced?0:'100%'}} transition={{duration:reduced?0:.42}}/></AnimatePresence></div><div className="photo-caption"><span>{current.caption}</span><Sparkles size={21}/></div></div><div className="photo-controls"><button aria-label="Previous slide" onClick={()=>setSlide((slide+2)%3)}><ChevronLeft/></button>{!reduced&&<button aria-label={paused?'Play slideshow':'Pause slideshow'} onClick={()=>setPaused(!paused)}>{paused?<Play/>:<Pause/>}</button>}<button aria-label="Next slide" onClick={()=>setSlide((slide+1)%3)}><ChevronRight/></button></div></div></section>
+ <section className="shell pathways" id="pathways"><div className="eyebrow"><span/> YOUR PATHWAY</div><h2>Find your place<span className="orange-text">.</span></h2><div className="role-grid">{['student','teacher'].map(r=><button key={r} className={'role-card '+r} onClick={()=>openPath(r)}><div className="role-copy"><div className="role-icon">{r==='student'?<GraduationCap/>:<Presentation/>}</div><h3>For {r}s</h3><p>{r==='student'?'Find tuition that fits your subjects, pace and learning goals.':'Share your expertise and connect with curious learners.'}</p><span className="role-link">{r==='student'?'Explore student pathway':'Explore teacher pathway'} <ArrowUpRight size={15}/></span></div><RoleArt teacher={r==='teacher'}/></button>)}</div></section>
+ <section className="about shell" id="about"><div><div className="eyebrow"><span/> ABOUT STUDYFOLK</div><h2>A place to learn<br/>from each other<span className="orange-text">.</span></h2></div><div><p>Studyfolk brings students, families and teachers together for tuition in India. Tell us what you want to learn or teach, and help us find the right starting point for a conversation.</p><div className="about-icons"><span><Lightbulb/> Subject guidance</span><span><UsersRound/> Teacher connections</span></div></div></section>
+ <div className="shell"><Enquiry role={role} setRole={setRole}/></div></main><footer><div className="shell footer-inner"><Brand/><span>Studyfolk Learning Centre</span><WhatsAppContact/></div></footer>
+ <dialog ref={dialog} onCancel={()=>setPath(null)} onClick={e=>{if(e.target===dialog.current)setPath(null)}}><div className="dialog-body"><button aria-label="Close pathway" onClick={()=>setPath(null)} className="close"><X/></button><div className="role-icon">{path==='teacher'?<Presentation/>:<GraduationCap/>}</div><h2>{path==='teacher'?'Teacher pathway':'Student pathway'}</h2><p>{path==='teacher'?'Tell us which subjects you teach, the classes you support and how you prefer to meet learners.':'Tell us your class, board and subjects so the centre can understand your tuition needs.'}</p><h3>{path==='teacher'?'Plan your teaching enquiry':'Plan your admission enquiry'}</h3><ul>{(path==='teacher'?['Choose the classes and subjects you can teach.','Outline your experience and availability.','Share contact details for a follow-up.']:['Identify the subjects you want to focus on.','Describe your goals and preferred learning format.','Share contact details for a follow-up.']).map(t=><li key={t}>{t}</li>)}</ul><a href="#enquiry" className="btn orange" onClick={()=>setPath(null)}><NotebookPen size={18}/> {path==='teacher'?'Teaching enquiry':'Admission enquiry'}</a></div></dialog></div>
+}
+createRoot(document.getElementById('root')).render(<App/>)
