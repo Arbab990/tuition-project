@@ -57,7 +57,7 @@ Import the repository and use these project settings.
 | Output directory | `dist` |
 | Environment variables | `VITE_STUDENT_FORM_URL` and `VITE_TEACHER_FORM_URL` |
 
-The tracked `.env` supplies the centre’s public student and teacher form links for local and Vercel builds. To use different forms for a deployment, override the variables in that Vercel environment and redeploy.
+Local builds read the form links from the ignored `.env` or `.env.local` file. On Vercel, set both variables in the project’s environment settings and redeploy so the build includes the respondent URLs.
 
 ## Where to make changes
 
