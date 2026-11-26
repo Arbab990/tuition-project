@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/enquiries/:formId",
+      "destination": "https://docs.google.com/forms/d/e/:formId/formResponse"
+    }
+  ]
+}

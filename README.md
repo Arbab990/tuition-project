@@ -1,4 +1,4 @@
-﻿# <img src="docs/icons/book.svg" width="28" height="28" alt=""> Studyfolk Learning Centre
+# <img src="docs/icons/book.svg" width="28" height="28" alt=""> Studyfolk Learning Centre
 
 Studyfolk helps families in India enquire about tuition and teachers apply to work as tutors. **Find tuition** opens the student enquiry panel. **Apply to tutor** opens the teacher application panel. Visitors can also contact the centre directly on [WhatsApp at +91 85779 55175](https://wa.me/918577955175).
 
@@ -8,11 +8,11 @@ Studyfolk helps families in India enquire about tuition and teachers apply to wo
 | --- | --- |
 | Explore the centre | Three photo slides move right every five seconds and loop. Visitors can pause, play, or choose a slide. Autoplay respects reduced-motion preferences. |
 | Choose a pathway | Student and teacher cards explain what to prepare for each enquiry. Both pathways are public. The selected role lasts for the browser tab’s session. |
-| Send an enquiry | Each configured role opens its own Google Form inside the page, with a link to open it separately. A role awaiting configuration displays a read-only preview and a closed-submissions message. |
+| Send an enquiry | Visitors fill out the Studyfolk fields for their selected role. The site displays a receipt after Google confirms submission. A role awaiting configuration displays a read-only preview and a closed-submissions message. |
 | Contact the centre | WhatsApp links appear in the enquiry section and footer. |
 | Browse on a phone | Navigation collapses into a menu, the layout stacks, and touch controls accommodate smaller screens. |
 
-The site runs on React and Vite with Tailwind CSS, custom CSS, Framer Motion and Lucide React icons. Vercel serves static files. Google Forms handles submissions and Google Sheets stores the responses. The browser stores only the role preference.
+The site runs on React and Vite with Tailwind CSS, custom CSS, Framer Motion and Lucide React icons. Vercel serves static files. Vercel forwards enquiry posts to Google Forms through the rewrite in vercel.json. Vite proxies the same route during local development and preview. Google Sheets stores the responses. The browser stores only the role preference.
 
 ## <img src="docs/icons/terminal.svg" width="22" height="22" alt=""> Run locally
 
@@ -66,6 +66,6 @@ Local builds read the form links from the ignored `.env` or `.env.local` file. O
 | Hero text, slide timing, navigation, pathways or About section | [main.jsx](main.jsx) |
 | Hero photography | [public/images](public/images/) |
 | Layout, colours and responsive styles | [style.css](style.css) |
-| Role-specific enquiry previews and form embeds | [Enquiry.jsx](Enquiry.jsx) and [form.css](form.css) |
-| Live form questions | The corresponding form in Google Forms. Keep the setup script and website preview fields in sync for future setups. |
+| Role-specific fields and submission handling | [Enquiry.jsx](Enquiry.jsx) and [form.css](form.css) |
+| Live form questions | The corresponding form in Google Forms. Keep each Google question?s entry ID paired with its label in Enquiry.jsx. Recreating a question or form generates new IDs. Keep the confirmation message in sync with the setup script. |
 | WhatsApp icon destination | Update the international-format chat link in [WhatsAppContact.jsx](WhatsAppContact.jsx). |
