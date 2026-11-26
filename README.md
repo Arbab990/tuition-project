@@ -57,7 +57,7 @@ Import the repository and use these project settings.
 | Output directory | `dist` |
 | Environment variables | `VITE_STUDENT_FORM_URL` and `VITE_TEACHER_FORM_URL` |
 
-Add the respondent URLs to each Vercel environment that should accept enquiries, then deploy. Redeploy after changing either URL because Vite includes these values at build time.
+The tracked `.env` supplies the centre’s public student and teacher form links for local and Vercel builds. To use different forms for a deployment, override the variables in that Vercel environment and redeploy.
 
 ## Where to make changes
 
